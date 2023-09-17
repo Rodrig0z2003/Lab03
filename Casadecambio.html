@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa de Cambio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        select, input, button, #result {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Casa de Cambio</h1>
+        <label for="fromCurrency">Selecciona la moneda a cambiar:</label>
+        <select id="fromCurrency">
+            <option value="dolar">Dólar</option>
+            <option value="soles">Soles</option>
+            <option value="euros">Euros</option>
+        </select>
+
+        <label for="toCurrency">Selecciona la moneda a recibir:</label>
+        <select id="toCurrency">
+            <option value="dolar">Dólar</option>
+            <option value="soles">Soles</option>
+            <option value="euros">Euros</option>
+        </select>
+
+        <label for="amount">Ingresa el monto a cambiar:</label>
+        <input type="number" id="amount" placeholder="Ingresa el monto" oninput="updateAmount()">
+
+        <button onclick="calcularCambio()">Calcular Cambio</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function updateAmount() {
+            const amount = document.getElementById('amount').value;
+            document.getElementById('result').innerText = `Monto a cambiar: ${amount}`;
+        }
+
+        function calcularCambio() {
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+          
+            if (isNaN(amount) || amount <= 0) {
+                alert("Por favor, ingrese un monto válido.");
+                return;
+            }
+
+            
+            const cambioCalculado = calcularCambioApi(fromCurrency, toCurrency, amount);
+
+            document.getElementById('result').innerText = `Total a recibir: ${cambioCalculado.toFixed(2)} ${toCurrency}`;
+        }
+
+        
+        function calcularCambioApi(fromCurrency, toCurrency, amount) {
+            const tiposDeCambio = {
+                'dolar': {
+                    'dolar': 1,
+                    'soles': 4.0,
+                    'euros': 0.85
+                },
+                'soles': {
+                    'dolar': 0.25,
+                    'soles': 1,
+                    'euros': 0.21
+                },
+                'euros': {
+                    'dolar': 1.18,
+                    'soles': 4.75,
+                    'euros': 1
+                }
+            };
+
+            const tipoCambio = tiposDeCambio[fromCurrency][toCurrency];
+            return amount * tipoCambio;
+        }
+    </script>
+</body>
+</html>
+
